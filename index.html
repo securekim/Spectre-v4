@@ -71,7 +71,7 @@
     <button id="measureButton">정밀도 측정 시작</button>
     
     <div id="results" class="result-box" style="display:none;">
-        <strong>측정 결과:</strong>
+        <strong>측정 결과 (10만회 측정)</strong>
         <p id="minDeltaOutput"></p>
     </div>
 
@@ -142,7 +142,7 @@ function measurePrecision() {
         }
 
         outputElement.innerHTML = `
-            측정된 최소 정밀도: ${minDeltaMicroseconds} µs (마이크로초)<br>
+            측정된 최소 정밀도: ${minDeltaMicroseconds} µs / (${minDelta} ms)<br>
             <br>
             결과 해석: ${interpretation}
         `;
