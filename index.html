@@ -64,8 +64,8 @@
 <body>
 
 <div class="container">
-    <h1>⏱️ Spectre-v4 취약점 분석</h1>
-    <p>정밀도가 높을수록 캐시 히트/미스 해독 판단이 용이하여 Spectre-v4에 취약합니다. 아래 버튼을 눌러 브라우저에서 제공하는 타이머의 최소 정밀도(Minimum Precision)를 확인하십시오.</p>
+    <h1>Spectre-v4 취약점 분석</h1>
+    <p>정밀도가 높을수록 캐시 히트/미스 해독 판단이 용이하여 Spectre-v4에 취약합니다. 브라우저 타이머의 최소 정밀도(Minimum Precision)를 확인하세요.</p>
     
     <button id="measureButton">정밀도 측정 시작</button>
     
@@ -77,9 +77,10 @@
     <div class="note">
         <strong>결과 해석 참고:</strong>
         <ul>
-            <li>Spectre 완화가 적용된 경우: 최소 정밀도 값은 보통 0.02ms (20 µs) 이상 또는 0.1ms (100 µs) 수준으로 나타납니다.</li>
-            <li>Spectre 완화가 미적용된 경우: 최소 정밀도 값은 0.001ms (1 µs) 근처로 매우 낮게 나타납니다.</li>
-            <li>이 측정은 간접적인 방법이며, 실제 보안 상태는 브라우저 업데이트 및 OS/CPU 패치 상태에 따라 다릅니다.</li>
+            <li>Spectre 일반적 완화 적용: 0.02ms (20 µs) 이상</li>
+            <li>Spectre 강력한 완화 적용: 0.1ms (100 µs) 이상</li>
+            <li>Spectre 완화가 미적용: 0.001ms (1 µs) 수준</li>
+            <li>(Spectre-v4을 판단하는 간접적인 방법이며, 실제 보안 상태는 다를 수 있음)</li>
         </ul>
     </div>
 </div>
@@ -113,17 +114,16 @@ function measurePrecision() {
         let interpretation = "";
         
         // 정밀도(µs)를 기준으로 해석합니다.
-        if (minDeltaMicroseconds < 5) {
-             interpretation = "매우 높음 (5 µs 미만): 타이머 정밀도가 높게 유지되고 있습니다. 구형 브라우저이거나 완화 조치가 해제되었을 수 있습니다.";
+        if (minDeltaMicroseconds < 10) {
+             interpretation = "매우 높음 (10 µs 미만): 구형 브라우저이거나 완화 조치 해제됨";
         } else if (minDeltaMicroseconds >= 10 && minDeltaMicroseconds <= 25) {
-             interpretation = "중간 정밀도 (약 10~25 µs): 일반적인 완화 조치(20µs 제한)가 적용된 것으로 보입니다.";
+             interpretation = "중간 정밀도 (약 10~25 µs): 일반적인 완화 조치(약 20µs) 적용";
         } else if (minDeltaMicroseconds > 25 && minDeltaMicroseconds <= 110) {
-             interpretation = "낮은 정밀도 (약 25~110 µs): 강력한 완화 조치(100µs 제한)가 적용된 것으로 보입니다.";
+             interpretation = "낮은 정밀도 (약 25~110 µs): 강력한 완화 조치(약 100µs) 적용";
         } else {
-             interpretation = "기타: 측정된 값은 예상 범위 밖에 있습니다. (정밀도: " + minDeltaMicroseconds + " µs)";
+             interpretation = "Out of scope (정밀도: " + minDeltaMicroseconds + " µs)";
         }
 
-        // 결과 출력 시 Delta 값에 대한 설명은 제거하고, 정밀도(µs) 위주로 표시
         outputElement.innerHTML = `
             측정된 정밀도: ${minDeltaMicroseconds} µs (마이크로초)<br>
             <br>
