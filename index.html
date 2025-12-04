@@ -115,11 +115,11 @@ function measurePrecision() {
         
         // 정밀도(µs)를 기준으로 해석합니다.
         if (minDeltaMicroseconds < 10) {
-             interpretation = "매우 높음 (10 µs 미만): 구형 브라우저이거나 완화 조치 해제됨";
+             interpretation = "매우 높음 (10 µs 미만), 구형 브라우저이거나 완화 조치 해제됨";
         } else if (minDeltaMicroseconds >= 10 && minDeltaMicroseconds <= 25) {
-             interpretation = "중간 정밀도 (약 10~25 µs): 일반적인 완화 조치(약 20µs) 적용";
+             interpretation = "중간 정밀도 (약 10~25 µs), 일반적인 완화 조치 적용 됨";
         } else if (minDeltaMicroseconds > 25 && minDeltaMicroseconds <= 110) {
-             interpretation = "낮은 정밀도 (약 25~110 µs): 강력한 완화 조치(약 100µs) 적용";
+             interpretation = "낮은 정밀도 (약 25~110 µs): 강력한 완화 조치 적용 됨";
         } else {
              interpretation = "Out of scope (정밀도: " + minDeltaMicroseconds + " µs)";
         }
@@ -127,7 +127,7 @@ function measurePrecision() {
         outputElement.innerHTML = `
             측정된 정밀도: ${minDeltaMicroseconds} µs (마이크로초)<br>
             <br>
-            보안 해석: ${interpretation}
+            결과 해석: ${interpretation}
         `;
     }
 }
