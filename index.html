@@ -65,7 +65,8 @@
 
 <div class="container">
     <h1>Spectre-v4 취약점 분석</h1>
-    <p>정밀도가 높을수록 캐시 히트/미스 해독 판단이 용이하여 Spectre-v4에 취약합니다. 브라우저 타이머의 최소 정밀도(Minimum Precision)를 확인하세요.</p>
+    <p>정밀도가 높을수록 캐시 히트/미스 해독 판단이 용이하여 Spectre-v4에 취약합니다.</p>
+    <p>브라우저 타이머의 최소 정밀도(Minimum Precision)를 확인하세요.</p>
     
     <button id="measureButton">정밀도 측정 시작</button>
     
@@ -75,12 +76,11 @@
     </div>
 
     <div class="note">
-        <strong>결과 해석 참고:</strong>
+        <strong>결과 해석 참고(Spectre-v4을 판단하는 간접적인 방법이며, 실제 보안 상태는 다를 수 있음)</strong>
         <ul>
-            <li>Spectre 일반적 완화 적용: 0.02ms (20 µs) 이상</li>
             <li>Spectre 강력한 완화 적용: 0.1ms (100 µs) 이상</li>
-            <li>Spectre 완화가 미적용: 0.001ms (1 µs) 수준</li>
-            <li>(Spectre-v4을 판단하는 간접적인 방법이며, 실제 보안 상태는 다를 수 있음)</li>
+            <li>Spectre 일반적 완화 적용: 0.02ms (20 µs) 이상</li>
+            <li>Spectre 완화 미적용: 0.001ms (1 µs) 수준</li>
         </ul>
     </div>
 </div>
