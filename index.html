@@ -89,47 +89,64 @@
 function measurePrecision() {
     const SAMPLES = 100000;
     let deltas = [];
-    let prev = performance.now();
+    let prev = performance.now(); // 초기 prev 값 설정
     let current;
+    let nonZeroDeltaFound = false;
 
+    // 타이머 틱 간의 최소 차이를 찾기 위한 루프
     for (let i = 0; i < SAMPLES; i++) {
         current = performance.now();
-        if (current > prev) {
-            deltas.push(current - prev);
+        const delta = current - prev;
+        
+        // 0이 아닌 유효한 시간 차이만 수집합니다.
+        // 이는 브라우저 타이머의 '틱' 간격을 나타냅니다.
+        if (delta > 0) {
+            deltas.push(delta);
+            nonZeroDeltaFound = true;
         }
-        prev = current;
+        
+        // 다음 측정 기준이 될 시간을 current로 설정합니다.
+        prev = current; 
     }
 
-    deltas.sort((a, b) => a - b);
-    const minDelta = deltas.length > 0 ? deltas[0] : 0;
+    // 0이 아닌 델타 값을 수집했다면, 그 중 최솟값을 정밀도로 간주합니다.
+    let minDelta = 0;
+    if (nonZeroDeltaFound) {
+        // 배열을 오름차순으로 정렬하여 첫 번째 요소(최솟값)를 가져옵니다.
+        deltas.sort((a, b) => a - b);
+        minDelta = deltas[0]; 
+    }
+    
+    // 이 시점에서 minDelta는 0이거나 측정된 최소 정밀도(ms)입니다.
     
     const outputElement = document.getElementById('minDeltaOutput');
     document.getElementById('results').style.display = 'block';
 
-    if (minDelta === 0) {
-        outputElement.innerHTML = "오류: 측정된 유효한 시간 차이가 없습니다.";
+    if (minDelta <= 0) { // 0 또는 유효하지 않은 값이면 오류 처리
+        outputElement.innerHTML = "오류: 측정된 유효한 시간 차이가 없거나(0.00ms). 브라우저의 정밀도가 너무 낮습니다. SAMPLES 값을 늘려보세요.";
     } else {
+        // ms를 µs (마이크로초)로 변환
         const minDeltaMicroseconds = (minDelta * 1000).toFixed(2);
         
         let interpretation = "";
         
         // 정밀도(µs)를 기준으로 해석합니다.
         if (minDeltaMicroseconds < 10) {
-             interpretation = "매우 높음 (10 µs 미만), 구형 브라우저이거나 완화 조치 해제됨";
+             interpretation = "매우 높음 (< 10 µs): 구형 브라우저이거나 완화 조치 해제됨. 취약성 높음";
         } else if (minDeltaMicroseconds >= 10 && minDeltaMicroseconds <= 25) {
-             interpretation = "중간 정밀도 (약 10~25 µs), 일반적인 완화 조치 적용 됨";
+             interpretation = "중간 정밀도 (~10-25 µs): 일반적인 완화 조치 적용됨. 취약성 보통";
         } else if (minDeltaMicroseconds > 25 && minDeltaMicroseconds <= 110) {
-             interpretation = "낮은 정밀도 (약 25~110 µs): 강력한 완화 조치 적용 됨";
+             interpretation = "낮은 정밀도 (~25-110 µs): 강력한 완화 조치 적용됨. 취약성 낮음";
         } else {
-             interpretation = "Out of scope (정밀도: " + minDeltaMicroseconds + " µs)";
+             interpretation = `매우 낮은 정밀도 (${minDeltaMicroseconds} µs): 측정 범위 밖. 취약성 매우 낮음`;
         }
 
         outputElement.innerHTML = `
-            측정된 정밀도: ${minDeltaMicroseconds} µs (마이크로초)<br>
+            측정된 최소 정밀도: ${minDeltaMicroseconds} µs (마이크로초)<br>
             <br>
             결과 해석: ${interpretation}
         `;
-        console.log(`측정된 정밀도: ${minDeltaMicroseconds} µs (마이크로초)`);
+        console.log(`측정된 최소 정밀도: ${minDeltaMicroseconds} µs`);
         console.log(`결과 해석: ${interpretation}`);
     }
 }
